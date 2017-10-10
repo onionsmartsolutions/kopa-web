@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-
+import dj_database_url
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -27,6 +27,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
 
 # Application definition
 
@@ -101,16 +104,8 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-DATABASES = {
-   'default': {
-      'ENGINE': 'django.db.backends.postgresql_psycopg2',
-      'NAME': 'd5evnrkgjpo4fc',
-      'USER': 'meuzewtxzigyhb',
-      'PASSWORD': '8683e08b4a8b65c5ed58331ea0d0de0a4464f17ee6566238b2d3f2215b95eafa',
-      'HOST': 'ec2-50-19-118-164.compute-1.amazonaws.com',
-      'PORT': '5432',
-   }
-}
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -152,8 +147,6 @@ DATE_FORMAT = ('%d-%m-%Y')
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-
 # Extra places for collectstatic to find static files.
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, 'static'),
