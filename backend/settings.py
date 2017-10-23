@@ -103,10 +103,10 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
    'default': {
       'ENGINE': 'django.db.backends.mysql',
-      'NAME': 'kopa',
-      'USER': 'root',
-      'PASSWORD': '',
-      'HOST': '',
+      'NAME': 'aiphhppvljvd1w47',
+      'USER': 'cqd01niromwps92p',
+      'PASSWORD': 'ajgkugw5huo7deac',
+      'HOST': 'y06qcehxdtkegbeb.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
       'PORT': '3306',
    }
 }
