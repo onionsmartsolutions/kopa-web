@@ -1,10 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from app.models import User
-from app.serializers import UserSerializer
+from app.models import User,Loan,Statement,Settlement,Activation
+from app.serializers import UserSerializer,LoanSerializer,SettlementSerializer,StatementSerializer,ActivationSerializer
 from rest_framework import  viewsets,generics
 
+
+"""
+Users API
+"""
 class UserList(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -20,8 +24,50 @@ class UserList(generics.ListCreateAPIView):
             queryset = queryset.filter(email=email)
         return queryset
 
-
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+"""
+Loans API
+"""
+
+class LoanList(generics.ListCreateAPIView):
+    queryset = Loan.objects.all()
+    serializer_class = LoanSerializer
+
+class LoanDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Loan.objects.all()
+    serializer_class = LoanSerializer
+
+"""
+Settlement API
+"""
+class SettlementList(generics.ListCreateAPIView):
+    queryset = Settlement.objects.all()
+    serializer_class = SettlementSerializer
+
+class SettlementDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Settlement.objects.all()
+    serializer_class = SettlementSerializer
+
+class StatementList(generics.ListCreateAPIView):
+    queryset = Statement.objects.all()
+    serializer_class = StatementSerializer
+
+
+class StatementDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Statement.objects.all()
+    serializer_class = StatementSerializer
+
+
+class ActivationList(generics.ListCreateAPIView):
+    queryset = Activation.objects.all()
+    serializer_class = ActivationSerializer
+
+
+class ActivationDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Activation.objects.all()
+    serializer_class = ActivationSerializer
 

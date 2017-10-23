@@ -43,7 +43,6 @@ class Loan(models.Model):
 
     user = models.ForeignKey(
 	    User,
-	    on_delete=models.CASCADE,
 	    verbose_name="Loan Applicant",
     )
     applicationDate = models.DateField()
@@ -51,6 +50,47 @@ class Loan(models.Model):
     loan_amount = models.FloatField(default=0.00)
     loan_balance = models.FloatField(default=0.00)
     status = models.CharField(max_length=15,choices=STATUS,default=PENDING)
+
+
+class Settlement(models.Model):
+
+    OK  = 'Ok'
+    PENDING = 'Pending'
+    FAILED = 'Failed'
+   
+    STATUS  = (
+        (OK, 'Active'),
+        (PENDING, 'Pending'),
+        (FAILED, 'Failed'),
+    )
+
+    loan = models.ForeignKey(
+	    Loan,
+	    on_delete=models.CASCADE,
+	    verbose_name="Loan Settlement",
+    )
+    date = models.DateField()
+    amount = models.FloatField(default=0.00)
+    reference = models.CharField(max_length=20)
+    status = models.CharField(max_length=15,choices=STATUS,default=PENDING)
+
+
+
+class Statement(models.Model):
+
+    user = models.ForeignKey(
+	    User,
+	    verbose_name="Loan Applicant",
+    )
+    details = models.CharField(max_length=500)
+
+class Activation(models.Model):
+
+    user = models.ForeignKey(
+	    User,
+	    verbose_name="Loan Applicant",
+    )
+    reference = models.CharField(max_length=500)
    
   
 

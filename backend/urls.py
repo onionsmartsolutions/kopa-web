@@ -27,7 +27,6 @@ from django.contrib.auth.models import User
 urlpatterns = [
     #url(r'^admin/', admin.site.urls),
        url(r'^admin/', include(admin.site.urls)),
-       url(r'^welcome/',include('home.urls')),
        url(r'^app/', include('app.urls')),
      ]
 

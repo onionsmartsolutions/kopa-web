@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-import dj_database_url
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -25,11 +25,8 @@ SECRET_KEY = '4swr8x5t&00*zxz@+0a0rgq(y=uxy(el)(w13(lfemw()sm54i'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
-
-db_from_env = dj_database_url.config(conn_max_age=500)
-DATABASES['default'].update(db_from_env)
 
 # Application definition
 
@@ -42,11 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'home',
     'app',
     'django_seed',
     'import_export',
     'rest_framework',
+
     'rest_framework.authtoken',
     'corsheaders',
 
@@ -55,7 +52,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -104,8 +100,16 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-
-
+DATABASES = {
+   'default': {
+      'ENGINE': 'django.db.backends.mysql',
+      'NAME': 'kopa',
+      'USER': 'root',
+      'PASSWORD': '',
+      'HOST': '',
+      'PORT': '3306',
+   }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -141,9 +145,14 @@ USE_TZ = True
 
 DATE_FORMAT = ('%d-%m-%Y')
 
+SITE_ID = 1
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
+
+# The absolute path to the directory where collectstatic will collect static files for deployment.
+
+
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
@@ -151,16 +160,3 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-
-
-
-#MPESA Constants
-
-MPESA_URL = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials'
-CONSUMER_KEY = 'y4FfG3cIUINh2RGqLXtdOpldREzKVt7q'
-CONSUMER_SECRET = 'ekqWMG1YGCAz8JQq'
-
-#APP TOKEN
-
