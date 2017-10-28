@@ -20,7 +20,7 @@ class User(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     national_id = models.CharField(unique=True,max_length=8,default=12345678)
-    phone_no = models.CharField(unique=True,max_length=12,default=254712345678)
+    phone_no = models.CharField(unique=True,max_length=15,default=+254712345678)
     email = models.EmailField(max_length=50)
     status = models.CharField(max_length=15,choices=STATUS,default=PENDING)
     loan_limit = models.FloatField(default=200.00)
