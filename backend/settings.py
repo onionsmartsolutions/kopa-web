@@ -43,8 +43,6 @@ INSTALLED_APPS = [
     'django_seed',
     'import_export',
     'rest_framework',
-
-    'rest_framework.authtoken',
     'corsheaders',
 
 ]
