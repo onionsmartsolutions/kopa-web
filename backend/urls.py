@@ -17,7 +17,7 @@ from django.conf.urls import  include, url
 from django.contrib import admin
 admin.autodiscover()
 from django.contrib.auth.models import User
-
+from rest_framework.authtoken import views
 
 
 # Wire up our API using automatic URL routing.
@@ -27,6 +27,7 @@ from django.contrib.auth.models import User
 urlpatterns = [
     #url(r'^admin/', admin.site.urls),
        url(r'^admin/', include(admin.site.urls)),
+       url(r'^api-token-auth/', views.obtain_auth_token)
        url(r'^app/', include('app.urls')),
      ]
 
