@@ -29,7 +29,7 @@ class StatementAdminForm(forms.ModelForm):
 class StatementAdmin(ImportExportActionModelAdmin):
 	list_display = ("get_name","applicationDate","dueDate","loan_amount","loan_balance","status")
 	form = StatementAdminForm
-		def get_name(self, obj):
+	def get_name(self, obj):
 		return obj.user.first_name +'\t\t'+ obj.user.last_name
 
 
