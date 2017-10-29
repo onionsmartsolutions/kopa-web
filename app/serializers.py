@@ -17,9 +17,10 @@ class SettlementSerializer(serializers.ModelSerializer):
         fields = ("id","loan_id","date","amount","reference","status")
 
 class StatementSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     class Meta:
         model = Statement
-        fields = ("id","user_id","details")
+        fields = ("id","user","details")
 
 class ActivationSerializer(serializers.ModelSerializer):
     class Meta:
