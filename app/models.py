@@ -79,7 +79,7 @@ class Settlement(models.Model):
 class Statement(models.Model):
     user = models.ForeignKey(
 	    User,
-	    verbose_name="Loan Applicant",
+	    verbose_name="Loan User",
     )
     details = models.CharField(max_length=500)
 
