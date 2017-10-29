@@ -19,7 +19,7 @@ class SettlementSerializer(serializers.ModelSerializer):
 class StatementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Statement
-        fields = ("id","user_id","statement")
+        fields = ("id","user_id","details")
 
 class ActivationSerializer(serializers.ModelSerializer):
     class Meta:
