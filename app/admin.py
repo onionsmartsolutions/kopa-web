@@ -3,7 +3,7 @@ from django import forms
 from import_export.admin import ImportExportActionModelAdmin
 # Register your models here.
 
-from .models import Loan,User
+from .models import Loan,User,Statement
 
 class UserAdmin(ImportExportActionModelAdmin):
     list_display = ("first_name","last_name","national_id","phone_no","email","status","residence","loan_limit")
@@ -23,7 +23,17 @@ class LoanAdmin(ImportExportActionModelAdmin):
 	def get_name(self, obj):
 		return obj.user.first_name +'\t\t'+ obj.user.last_name
 
+class StatementAdminForm(forms.ModelForm):
+    user = CustomModelChoiceField(queryset=User.objects.all(),label = 'Applicant Name') 
+
+class StatementAdmin(ImportExportActionModelAdmin):
+	list_display = ("get_name","applicationDate","dueDate","loan_amount","loan_balance","status")
+	form = StatementAdminForm
+		def get_name(self, obj):
+		return obj.user.first_name +'\t\t'+ obj.user.last_name
+
 
 
 admin.site.register(Loan,LoanAdmin)
 admin.site.register(User,UserAdmin)
+admin.site.register(Statement,StatementAdmin)
