@@ -27,7 +27,7 @@ class StatementAdminForm(forms.ModelForm):
     user = CustomModelChoiceField(queryset=User.objects.all(),label = 'Applicant Name') 
 
 class StatementAdmin(ImportExportActionModelAdmin):
-	list_display = ("get_name","applicationDate","dueDate","loan_amount","loan_balance","status")
+	list_display = ("get_name","details")
 	form = StatementAdminForm
 	def get_name(self, obj):
 		return obj.user.first_name +'\t\t'+ obj.user.last_name
