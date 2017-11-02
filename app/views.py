@@ -37,6 +37,17 @@ class LoanList(generics.ListCreateAPIView):
     queryset = Loan.objects.all()
     serializer_class = LoanSerializer
 
+    def get_queryset(self):
+        """
+        Optionally restricts the returned loans applied by a given user,
+        by filtering against a `username` query parameter in the URL.
+        """
+        queryset = Loans.objects.all()
+        user = self.request.query_params.get('user', None)
+        if user is not None:
+            queryset = queryset.filter(user=user)
+        return queryset
+
 class LoanDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Loan.objects.all()
     serializer_class = LoanSerializer
@@ -55,6 +66,17 @@ class SettlementDetail(generics.RetrieveUpdateDestroyAPIView):
 class StatementList(generics.ListCreateAPIView):
     queryset = Statement.objects.all()
     serializer_class = StatementSerializer
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned loans applied by a given user,
+        by filtering against a `username` query parameter in the URL.
+        """
+        queryset = Statement.objects.all()
+        user = self.request.query_params.get('user', None)
+        if user is not None:
+            queryset = queryset.filter(user=user)
+        return queryset
 
 
 class StatementDetail(generics.RetrieveUpdateDestroyAPIView):

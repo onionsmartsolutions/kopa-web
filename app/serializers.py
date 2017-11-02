@@ -7,9 +7,10 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ("id","first_name","last_name","national_id","phone_no","email","status","residence","device_id","loan_limit")
 
 class LoanSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     class Meta:
         model = Loan
-        fields = ("id","user_id","applicationDate","dueDate","loan_amount","loan_balance","status")
+        fields = ("id","user","applicationDate","dueDate","loan_amount","loan_balance","status")
 
 class SettlementSerializer(serializers.ModelSerializer):
     class Meta:
@@ -23,6 +24,7 @@ class StatementSerializer(serializers.ModelSerializer):
         fields = ("id","user","details")
 
 class ActivationSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     class Meta:
         model = Activation
-        fields = ("id","user_id","reference")
+        fields = ("id","user","reference")
