@@ -63,7 +63,7 @@ class SettlementDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Settlement.objects.all()
     serializer_class = SettlementSerializer
 
-     def get_queryset(self):
+    def get_queryset(self):
         """
         Optionally restricts the returned loans applied by a given user,
         by filtering against a `username` query parameter in the URL.
