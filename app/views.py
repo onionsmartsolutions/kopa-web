@@ -73,9 +73,9 @@ class StatementList(generics.ListCreateAPIView):
         by filtering against a `username` query parameter in the URL.
         """
         queryset = Statement.objects.all()
-        user = self.request.query_params.get('user', None)
+        user = self.request.query_params.get('user_id', None)
         if user is not None:
-            queryset = queryset.filter(user=user)
+            queryset = queryset.filter(user_id=user)
         return queryset
 
 
