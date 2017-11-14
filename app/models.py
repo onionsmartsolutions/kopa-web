@@ -57,7 +57,7 @@ class Settlement(models.Model):
     FAILED = 'Failed'
    
     STATUS  = (
-        (OK, 'Active'),
+        (OK, 'Ok'),
         (PENDING, 'Pending'),
         (FAILED, 'Failed'),
     )
@@ -86,8 +86,21 @@ class Activation(models.Model):
 	    User,
 	    verbose_name="Loan Applicant",
     )
-    reference = models.CharField(max_length=500)
+
+    OK  = 'Ok'
+    PENDING = 'Pending'
+    FAILED = 'Failed'
    
+    STATUS  = (
+        (OK, 'Ok'),
+        (PENDING, 'Pending'),
+        (FAILED, 'Failed'),
+    )
+
+    reference = models.CharField(max_length=500)
+    status = models.CharField(max_length=15,choices=STATUS,default=PENDING)
+
+
   
 
 
