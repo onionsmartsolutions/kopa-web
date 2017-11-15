@@ -27,4 +27,4 @@ class ActivationSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     class Meta:
         model = Activation
-        fields = ("id","user","reference")
+        fields = ("id","user","reference","status")
