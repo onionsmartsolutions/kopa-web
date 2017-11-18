@@ -2,6 +2,8 @@ from django.db import models
 from django.conf import settings
 from datetime import date
 from django.contrib import admin
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 # Create your models here.
 
 class User(models.Model):
@@ -72,8 +74,6 @@ class Settlement(models.Model):
     reference = models.CharField(max_length=20)
     status = models.CharField(max_length=15,choices=STATUS,default=PENDING)
 
-
-
 class Statement(models.Model):
     user = models.ForeignKey(
 	    User,
@@ -99,6 +99,41 @@ class Activation(models.Model):
 
     reference = models.CharField(max_length=500)
     status = models.CharField(max_length=15,choices=STATUS,default=PENDING)
+
+#signals
+
+@receiver(post_save, sender=Activation)
+def check_activation_status(sender, instance, created, **kwargs):
+    activation = instance
+    if activation.status=="Ok":
+        user = User.objects.get(pk=activation.user.id)
+        user.status = "Active"
+        user.save()
+    elif activation.status == "Pending" or activation.status == "Failed":
+        user = User.objects.get(pk=activation.user.id)
+        if user.status == "Active":
+            user.status = "Pending"
+            user.save()
+
+@receiver(post_save, sender=Settlement)
+def check_settlement_status(sender, instance, created, **kwargs):
+    settlement = instance
+    if(settlement.status=="Ok"):
+        loan = Loan.objects.get(pk=settlement.loan.id)
+        loan_balance = loan_balance - settlement.amount
+        if loan_balance == 0 or loan_balance<0:
+            loan.status = "Settled"
+        loan.save()
+
+    elif settlement.status == "Pending" or settlement.status == "Failed":
+        loan = Loan.objects.get(pk=settlement.loan.id)
+        if loan.status == "Active":
+            loan_balance = loan_balance + settlement.amount
+        if loan_balance == 0 or loan_balance<0:
+            loan.status = "Settled"
+        loan.save()
+
+
 
 
   
