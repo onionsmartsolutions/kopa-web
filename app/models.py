@@ -22,12 +22,12 @@ class User(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     national_id = models.CharField(unique=True,max_length=8,default=12345678)
-    phone_no = models.CharField(unique=True,max_length=15,default='+254712345678')
+    phone_no = models.CharField(unique=True,max_length=15,default='0712345678')
     email = models.EmailField(max_length=50)
     status = models.CharField(max_length=15,choices=STATUS,default=PENDING)
     loan_limit = models.FloatField(default=200.00)
     residence = models.CharField(max_length=100)
-    device_id = models.BigIntegerField(unique=True,default=0)
+    device_id = models.BigIntegerField(blank=True,default=0)
 
 
 class Loan(models.Model):
@@ -67,7 +67,7 @@ class Settlement(models.Model):
     loan = models.ForeignKey(
 	    Loan,
 	    on_delete=models.CASCADE,
-	    verbose_name="Loan Settlement",
+	    verbose_name="Loan",
     )
     date = models.DateField()
     amount = models.FloatField(default=0.00)
@@ -77,7 +77,7 @@ class Settlement(models.Model):
 class Statement(models.Model):
     user = models.ForeignKey(
 	    User,
-	    verbose_name="Loan User",
+	    verbose_name="Loan Applicant",
     )
     details = models.CharField(max_length=500)
 
@@ -120,16 +120,19 @@ def check_settlement_status(sender, instance, created, **kwargs):
     settlement = instance
     if(settlement.status=="Ok"):
         loan = Loan.objects.get(pk=settlement.loan.id)
-        loan_balance = loan_balance - settlement.amount
-        if loan_balance == 0 or loan_balance<0:
+        loan.loan_balance = loan.loan_balance - settlement.amount
+        if loan.loan_balance == 0 or loan.loan_balance<0:
             loan.status = "Settled"
+            user = User.objects.get(pk=loan.user.id)
+            user.loan_limit = user.loan_limit * 1.2
+            user.save()
         loan.save()
 
     elif settlement.status == "Pending" or settlement.status == "Failed":
         loan = Loan.objects.get(pk=settlement.loan.id)
         if loan.status == "Active":
-            loan_balance = loan_balance + settlement.amount
-        if loan_balance == 0 or loan_balance<0:
+            loan.loan_balance = loan.loan_balance + settlement.amount
+        if loan.loan_balance == 0 or loan.loan_balance<0:
             loan.status = "Settled"
         loan.save()
 
