@@ -4,11 +4,6 @@ from datetime import date
 from django.contrib import admin
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-from app.sms import Sms
-import schedule
-import time
-import datetime
-
 # Create your models here.
 
 class User(models.Model):
@@ -113,10 +108,6 @@ def check_activation_status(sender, instance, created, **kwargs):
     if activation.status=="Ok":
         user = User.objects.get(pk=activation.user.id)
         user.status = "Active"
-        message = "KOPESHA LOANS \n Dear "+user.first_name+",Your Account is now active.You can now start borrowing loans."
-        to = "+254"+user.phone_no
-        Sms.send_message(to,message)
-
         user.save()
     elif activation.status == "Pending" or activation.status == "Failed":
         user = User.objects.get(pk=activation.user.id)
@@ -144,43 +135,6 @@ def check_settlement_status(sender, instance, created, **kwargs):
         if loan.loan_balance == 0 or loan.loan_balance<0:
             loan.status = "Settled"
         loan.save()
-
-
-    
-def send_reminders():
-    two_days_from_now = get_date('%Y-%m-%d',2)
-    today = get_date('%Y-%m-%d',0)
-    loans = Loan.objects.all()
-    for loan in loans:
-        if loan.due_date == two_days_from_now:
-             user = User.objects.get(pk=loan.user.id)
-             message = "KOPESHA LOANS \n Dear "+user.first_name+",Your Loan of Ksh."+loan.loan_amount+" is due on "+loan.due_date+".Please pay your balance of Ksh."+loan.loan_balance
-             to = "+254"+user.phone_no
-             Sms.send_message(to,message)
-
-        elif loan.due_date == today:
-             user = User.objects.get(pk=loan.user.id)
-             message = "KOPESHA LOANS \n Dear "+user.first_name+",Your Loan of Ksh."+loan.loan_amount+" is due today.Please pay your balance of Ksh."+loan.loan_balance+" to avoid blacklisting"
-             to = "+254"+user.phone_no
-             Sms.send_message(to,message)
-
-
-def get_date(dateFormat="%Y-%m-%d", addDays=0):
-
-    timeNow = datetime.datetime.now()
-    if (addDays!=0):
-        anotherTime = timeNow + datetime.timedelta(days=addDays)
-    else:
-        anotherTime = timeNow
-
-    return anotherTime.strftime(dateFormat)      
-
-
-schedule.every().day.at("10:00").do(send_reminders)
-while True:
-    schedule.run_pending()
-    time.sleep(1)
-
 
 
 
