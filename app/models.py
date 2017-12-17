@@ -4,6 +4,10 @@ from datetime import date
 from django.contrib import admin
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from africastalking.AfricasTalkingGateway import (AfricasTalkingGateway, AfricasTalkingGatewayException)
+import schedule
+import time
+import datetime
 # Create your models here.
 
 class User(models.Model):
@@ -43,8 +47,8 @@ class Loan(models.Model):
     )
 
     user = models.ForeignKey(
-	    User,
-	    verbose_name="Loan Applicant",
+        User,
+        verbose_name="Loan Applicant",
     )
     applicationDate = models.DateField()
     dueDate = models.DateField()
@@ -65,9 +69,9 @@ class Settlement(models.Model):
     )
 
     loan = models.ForeignKey(
-	    Loan,
-	    on_delete=models.CASCADE,
-	    verbose_name="Loan",
+        Loan,
+        on_delete=models.CASCADE,
+        verbose_name="Loan",
     )
     date = models.DateField()
     amount = models.FloatField(default=0.00)
@@ -76,15 +80,15 @@ class Settlement(models.Model):
 
 class Statement(models.Model):
     user = models.ForeignKey(
-	    User,
-	    verbose_name="Loan Applicant",
+        User,
+        verbose_name="Loan Applicant",
     )
     details = models.CharField(max_length=500)
 
 class Activation(models.Model):
     user = models.ForeignKey(
-	    User,
-	    verbose_name="Loan Applicant",
+        User,
+        verbose_name="Loan Applicant",
     )
 
     OK  = 'Ok'
@@ -109,6 +113,10 @@ def check_activation_status(sender, instance, created, **kwargs):
         user = User.objects.get(pk=activation.user.id)
         user.status = "Active"
         user.save()
+        message = "KOPESHA LOANS \nDear "+user.first_name+",Your Kopesha Account is now active.You can now get a loan."
+        to = "+254"+user.phone_no
+        send_message(to,message)
+        
     elif activation.status == "Pending" or activation.status == "Failed":
         user = User.objects.get(pk=activation.user.id)
         if user.status == "Active":
@@ -136,8 +144,50 @@ def check_settlement_status(sender, instance, created, **kwargs):
             loan.status = "Settled"
         loan.save()
 
+def send_message(to,message):
+    username = "onionapp"
+    apikey   = "5c8ce53d0963fda2013f418ede4c0cd7d867206c1646f71a51cb647eb0524692"
+    gateway = AfricasTalkingGateway(username, apikey)
+    try:
+        results = gateway.sendMessage(to, message)
+    except AfricasTalkingGatewayException:
+        print ('Encountered an error while sending')
+
+def send_reminders():
+    two_days_from_now = get_date('%Y-%m-%d',2)
+    today = get_date('%Y-%m-%d',0)
+    loans = Loan.objects.all()
+    for loan in loans:
+        if loan.dueDate == two_days_from_now:
+             user = User.objects.get(pk=loan.user.id)
+             message = "KOPESHA LOANS \nDear "+user.first_name+",Your Loan of Ksh."+str(loan.loan_amount)+" is due on "+loan.due_date+".Please pay your balance of Ksh."+str(loan.loan_balance)
+             to = "+254"+user.phone_no
+             send_message(to,message)
+
+        elif loan.dueDate == today:
+             user = User.objects.get(pk=loan.user.id)
+             message = "KOPESHA LOANS \n Dear "+user.first_name+",Your Loan of Ksh."+str(loan.loan_amount)+" is due today.Please pay your balance of Ksh."+str(loan.loan_balance)+" to avoid blacklisting."
+             to = "+254"+user.phone_no
+             send_message(to,message)
 
 
+def get_date(dateFormat="%Y-%m-%d", addDays=0):
+
+    timeNow = datetime.datetime.now()
+    if (addDays!=0):
+        anotherTime = timeNow + datetime.timedelta(days=addDays)
+    else:
+        anotherTime = timeNow
+
+    return anotherTime.strftime(dateFormat)      
+
+
+schedule.every().day.at("10:30").do(send_reminders)
+
+while True:
+    schedule.run_pending()
+    time.sleep(1)
+   
 
   
 
@@ -146,7 +196,7 @@ def check_settlement_status(sender, instance, created, **kwargs):
 
 
 
-	
+    
 
 
 
