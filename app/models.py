@@ -182,11 +182,9 @@ def get_date(dateFormat="%Y-%m-%d", addDays=0):
     return anotherTime.strftime(dateFormat)      
 
 
-schedule.every().day.at("10:30").do(send_reminders)
 
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+
+
    
 
   
