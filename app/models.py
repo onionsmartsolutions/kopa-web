@@ -128,18 +128,17 @@ def check_settlement_status(sender, instance, created, **kwargs):
     settlement = instance
     if(settlement.status=="Ok"):
         loan = Loan.objects.get(pk=settlement.loan.id)
-        loan.loan_balance = loan.loan_balance - settlement.amount
         if loan.loan_balance == 0 or loan.loan_balance<0:
             loan.status = "Settled"
             user = User.objects.get(pk=loan.user.id)
             user.loan_limit = user.loan_limit * 1.2
             user.save()
+        elif loan.loan_balance>0:
+            loan.loan_balance = loan.loan_balance - settlement.amount
         loan.save()
 
     elif settlement.status == "Pending" or settlement.status == "Failed":
         loan = Loan.objects.get(pk=settlement.loan.id)
-        if loan.status == "Active":
-            loan.loan_balance = loan.loan_balance + settlement.amount
         if loan.loan_balance == 0 or loan.loan_balance<0:
             loan.status = "Settled"
         loan.save()
