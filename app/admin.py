@@ -21,7 +21,7 @@ class LoanAdminForm(forms.ModelForm):
     user = UserModelChoiceField(queryset=User.objects.all(),label = 'Applicant Name') 
 
 class LoanAdmin(ImportExportActionModelAdmin):
-	list_display = ("get_name","applicationDate","dueDate","loan_amount","loan_balance","status")
+	list_display = ("id","get_name","applicationDate","dueDate","loan_amount","loan_balance","status")
 	form = LoanAdminForm
 	search_fields = ["applicationDate","dueDate","loan_amount","loan_balance","status"]
 	def get_name(self, obj):
@@ -46,7 +46,7 @@ class ActivationAdmin(ImportExportActionModelAdmin):
 		return obj.user.first_name +'\t\t'+ obj.user.last_name
 
 class SettlementAdminForm(forms.ModelForm):
-    Loan = LoanModelChoiceField(queryset=Loan.objects.all(),label = 'Loan Number') 
+    loan = LoanModelChoiceField(queryset=Loan.objects.all(),label = 'Loan Number') 
 
 class SettlementAdmin(ImportExportActionModelAdmin):
 	list_display = ("get_loan","date","amount","reference","status")

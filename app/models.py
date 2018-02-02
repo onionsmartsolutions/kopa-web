@@ -1,11 +1,9 @@
 from django.db import models
 from django.conf import settings
-from datetime import date
 from django.contrib import admin
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from africastalking.AfricasTalkingGateway import (AfricasTalkingGateway, AfricasTalkingGatewayException)
-import schedule
 import time
 import datetime
 # Create your models here.
@@ -152,22 +150,35 @@ def send_message(to,message):
     except AfricasTalkingGatewayException:
         print ('Encountered an error while sending')
 
-def send_reminders():
-    two_days_from_now = get_date('%Y-%m-%d',2)
+def monitor_loans():
     today = get_date('%Y-%m-%d',0)
     loans = Loan.objects.all()
+    date_format = '%Y-%m-%d'
     for loan in loans:
-        if loan.dueDate == two_days_from_now:
-             user = User.objects.get(pk=loan.user.id)
-             message = "KOPESHA LOANS \nDear "+user.first_name+",Your Loan of Ksh."+str(loan.loan_amount)+" is due on "+loan.due_date+".Please pay your balance of Ksh."+str(loan.loan_balance)
-             to = "+254"+user.phone_no
-             send_message(to,message)
+        if loan.status == "Active":
+            due_date = loan.dueDate
+            d1 = datetime.datetime.strptime(today, fmt)
+            d2 = datetime.datetime.strptime(due_date, fmt)     
+            daysDiff = int((d2-d1).days)          
 
-        elif loan.dueDate == today:
-             user = User.objects.get(pk=loan.user.id)
-             message = "KOPESHA LOANS \n Dear "+user.first_name+",Your Loan of Ksh."+str(loan.loan_amount)+" is due today.Please pay your balance of Ksh."+str(loan.loan_balance)+" to avoid blacklisting."
-             to = "+254"+user.phone_no
-             send_message(to,message)
+            if  daysDiff < 0:
+                daysDiff = daysDiff * -1
+                remainder = daysDiff % 30
+        
+                if remainder == 1: #a day has passed after n months so increment loan
+                    #increase loan balance by 20%
+                    loan.loan_balance = loan_balance * 1.2
+                    loan.save()
+                    print('Loan increased because deadline has passed by a month')
+
+            elif daysDiff <=5 and daysDiff >=1 :
+                print ('Deadline Approaching')
+                #send reminder
+
+            elif daysDiff == 0:
+                print ("D-Day has reached")
+
+        
 
 
 def get_date(dateFormat="%Y-%m-%d", addDays=0):
@@ -179,6 +190,9 @@ def get_date(dateFormat="%Y-%m-%d", addDays=0):
         anotherTime = timeNow
 
     return anotherTime.strftime(dateFormat)      
+
+
+
 
 
 
