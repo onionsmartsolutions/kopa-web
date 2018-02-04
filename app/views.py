@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from app.models import User,Loan,Statement,Settlement,Activation
+from app.models import User,Loan,Statement,Settlement,Activation,monitor_loans,dummy_task
 from app.serializers import UserSerializer,LoanSerializer,SettlementSerializer,StatementSerializer,ActivationSerializer
 from rest_framework import  viewsets,generics
 
@@ -114,4 +114,8 @@ class ActivationList(generics.ListCreateAPIView):
 class ActivationDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Activation.objects.all()
     serializer_class = ActivationSerializer
+
+def run_task(request):
+    #monitor_loans()
+    return HttpResponse(monitor_loans())
 

@@ -14,4 +14,5 @@ urlpatterns = [
     url(r'^settlements/(?P<pk>[0-9]+)/$', views.SettlementDetail.as_view()),
     url(r'^activations/$', views.ActivationList.as_view()),
     url(r'^activations/(?P<pk>[0-9]+)/$', views.ActivationDetail.as_view()),
+    url(r'^analyze', views.run_task),
 ]

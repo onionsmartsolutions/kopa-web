@@ -151,26 +151,27 @@ def send_message(to,message):
         print ('Encountered an error while sending')
 
 def monitor_loans():
-    today = get_date('%Y-%m-%d',0)
+    today = get_date("%Y-%m-%d",0)
     loans = Loan.objects.all()
-    date_format = '%Y-%m-%d'
+    date_format = "%Y-%m-%d"
     for loan in loans:
         if loan.status == "Active":
-            due_date = loan.dueDate
-            d1 = datetime.datetime.strptime(today, fmt)
-            d2 = datetime.datetime.strptime(due_date, fmt)     
+            due_date = loan.dueDate.strftime('%Y-%m-%d') 
+            d1 = datetime.datetime.strptime(today, '%Y-%m-%d')
+            d2 = datetime.datetime.strptime(due_date,'%Y-%m-%d')     
             daysDiff = int((d2-d1).days)          
 
-            if  daysDiff < 0:
+            if  daysDiff < 0: #Loan is Overdue
                 daysDiff = daysDiff * -1
                 remainder = daysDiff % 30
         
                 if remainder == 1: #a day has passed after n months so increment loan
                     #increase loan balance by 20%
-                    loan.loan_balance = loan_balance * 1.2
+                    loan.loan_balance = loan.loan_balance * 1.2
                     loan.save()
                     print('Loan increased because deadline has passed by a month')
-
+                else:
+                    print('Severly Late') 
             elif daysDiff <=5 and daysDiff >=1 :
                 print ('Deadline Approaching')
                 #send reminder
@@ -189,7 +190,10 @@ def get_date(dateFormat="%Y-%m-%d", addDays=0):
     else:
         anotherTime = timeNow
 
-    return anotherTime.strftime(dateFormat)      
+    return anotherTime.strftime(dateFormat)
+
+def dummy_task():
+    print("Yeey am a dummy task")      
 
 
 
