@@ -31,7 +31,6 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'djcelery',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.sites',
