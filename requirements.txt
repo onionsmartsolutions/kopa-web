@@ -27,7 +27,7 @@ django-jsonfield==1.0.1
 django-nvd3==0.9.7
 django-qsstats-magic==1.0.0
 django-seed==0.1.7
-djangorestframework==3.6.4
+djangorestframework==3.11.2
 dnspython==1.15.0
 email-validator==1.0.2
 et-xmlfile==1.0.1
